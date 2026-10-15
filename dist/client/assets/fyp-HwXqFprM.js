@@ -1,0 +1,1 @@
+import{t as e}from"./feed-DbnDIzPG.js";import{T as t}from"./index-0MkAHJ8c.js";var n=t(),r=()=>(0,n.jsx)(e,{kind:`video`});export{r as component};

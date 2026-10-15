@@ -1,0 +1,1 @@
+import{T as e,b as t}from"./index-0MkAHJ8c.js";var n=e(),r=()=>(0,n.jsx)(t,{to:`/chat`});export{r as component};

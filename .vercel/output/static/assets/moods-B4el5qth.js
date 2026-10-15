@@ -1,0 +1,1 @@
+import{t as e}from"./feed-CM24miQD.js";import{T as t}from"./index-Odw02vtj.js";var n=t(),r=()=>(0,n.jsx)(e,{kind:`mood`});export{r as component};

@@ -1,0 +1,249 @@
+import { o as __toESM } from "../_runtime.mjs";
+import { a as require_react, i as require_jsx_runtime, r as useQueryClient, t as useQuery } from "../_libs/react+tanstack__react-query.mjs";
+import { a as errText, i as Input, n as Button, t as Avatar } from "./ui-CBRITsGD.mjs";
+import { C as Send, N as MessagesSquare, O as Phone, a as Video } from "../_libs/lucide-react.mjs";
+import { D as getTyping, K as sendGroupMessage, M as listFriends, N as listGroups, T as getGroup, Y as setTyping, r as PageHeading, v as createGroup } from "./shell-DX5LxS3D.mjs";
+import { n as toast } from "../_libs/sonner.mjs";
+import { t as CallFrame } from "./jitsi-B2VjNLv4.mjs";
+//#region node_modules/.nitro/vite/services/ssr/assets/groups-DzK-9I_W.js
+var import_react = /* @__PURE__ */ __toESM(require_react());
+var import_jsx_runtime = require_jsx_runtime();
+function GroupsPage() {
+	const qc = useQueryClient();
+	const [showCreate, setShowCreate] = (0, import_react.useState)(false);
+	const [name, setName] = (0, import_react.useState)("");
+	const [picked, setPicked] = (0, import_react.useState)([]);
+	const [active, setActive] = (0, import_react.useState)(null);
+	const [text, setText] = (0, import_react.useState)("");
+	const [room, setRoom] = (0, import_react.useState)(null);
+	const groups = useQuery({
+		queryKey: ["groups"],
+		queryFn: () => listGroups()
+	});
+	const friends = useQuery({
+		queryKey: ["friends"],
+		queryFn: () => listFriends()
+	});
+	const detail = useQuery({
+		queryKey: ["group", active],
+		enabled: Boolean(active),
+		queryFn: () => getGroup({ data: { groupId: active } }),
+		refetchInterval: 3e3
+	});
+	const typing = useQuery({
+		queryKey: ["gtyping", active],
+		enabled: Boolean(active),
+		queryFn: () => getTyping({ data: { key: `group:${active}` } }),
+		refetchInterval: 2e3
+	});
+	async function makeGroup(event) {
+		event.preventDefault();
+		try {
+			const created = await createGroup({ data: {
+				name,
+				memberIds: picked
+			} });
+			setName("");
+			setPicked([]);
+			setActive(created.id);
+			toast.success("Group created");
+			await qc.invalidateQueries({ queryKey: ["groups"] });
+		} catch (error) {
+			toast.error(errText(error));
+		}
+	}
+	async function send(event) {
+		event.preventDefault();
+		if (!active || !text.trim()) return;
+		try {
+			await sendGroupMessage({ data: {
+				groupId: active,
+				body: text
+			} });
+			setText("");
+			await qc.invalidateQueries({ queryKey: ["group", active] });
+		} catch (error) {
+			toast.error(errText(error));
+		}
+	}
+	const accepted = friends.data?.filter((row) => row.status === "accepted" && row.person) ?? [];
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
+		/* @__PURE__ */ (0, import_jsx_runtime.jsx)(PageHeading, {
+			title: "Groups",
+			subtitle: "Start a group, add friends, and jump into a Jitsi call together."
+		}),
+		/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+			className: "chat-layout",
+			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("aside", {
+				className: "chat-people space-y-4",
+				children: [
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
+						type: "button",
+						className: "w-full",
+						onClick: () => setShowCreate(true),
+						children: "Create group"
+					}),
+					showCreate && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+						className: "fixed inset-0 z-50 flex items-end justify-center bg-black/40 p-4 md:items-center",
+						onClick: () => setShowCreate(false),
+						children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("form", {
+							className: "w-full max-w-md space-y-3 rounded-3xl bg-card p-5 shadow-xl",
+							onClick: (e) => e.stopPropagation(),
+							onSubmit: (e) => {
+								makeGroup(e).then(() => setShowCreate(false));
+							},
+							children: [
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+									className: "text-lg font-bold",
+									children: "New group"
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Input, {
+									"aria-label": "Group name",
+									placeholder: "Group name",
+									value: name,
+									onChange: (e) => setName(e.target.value),
+									required: true
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+									className: "text-xs font-semibold text-muted-foreground",
+									children: "Select members"
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "max-h-48 space-y-1 overflow-y-auto",
+									children: [accepted.map((row) => row.person && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
+										className: "flex items-center gap-2 rounded-xl px-2 py-2 text-sm hover:bg-muted",
+										children: [
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+												type: "checkbox",
+												checked: picked.includes(row.person.id),
+												onChange: (e) => setPicked((current) => e.target.checked ? [...current, row.person.id] : current.filter((id) => id !== row.person.id))
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Avatar, {
+												photo: row.person.photo,
+												emoji: row.person.avatar_emoji,
+												className: "size-8"
+											}),
+											"@",
+											row.person.username
+										]
+									}, row.person.id)), accepted.length === 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+										className: "text-xs text-muted-foreground",
+										children: "Add friends first."
+									})]
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "flex gap-2",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
+										type: "button",
+										variant: "outline",
+										className: "flex-1",
+										onClick: () => setShowCreate(false),
+										children: "Cancel"
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
+										type: "submit",
+										className: "flex-1",
+										children: "Create"
+									})]
+								})
+							]
+						})
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+						className: "space-y-1",
+						children: groups.data?.map((group) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+							type: "button",
+							className: `w-full rounded-xl px-3 py-2 text-left ${active === group.id ? "bg-secondary" : "hover:bg-muted"}`,
+							onClick: () => setActive(group.id),
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+								className: "block text-sm font-semibold",
+								children: group.name
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+								className: "text-xs text-muted-foreground",
+								children: [group.members, " members"]
+							})]
+						}, group.id))
+					})
+				]
+			}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("section", {
+				className: "chat-window",
+				children: detail.data ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("header", {
+						className: "flex items-center gap-2 border-b border-border p-3",
+						children: [
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "min-w-0 flex-1",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+									className: "truncate font-bold",
+									children: detail.data.name
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+									className: "truncate text-xs text-muted-foreground",
+									children: typing.data?.length ? `${typing.data.join(", ")} typing…` : detail.data.members.map((m) => `@${m.username}`).join(" ")
+								})]
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
+								variant: "ghost",
+								className: "size-11 px-0",
+								"aria-label": "Group voice call",
+								onClick: () => setRoom(detail.data.call_room),
+								children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Phone, { className: "size-4" })
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
+								variant: "ghost",
+								className: "size-11 px-0",
+								"aria-label": "Group video call",
+								onClick: () => setRoom(detail.data.call_room),
+								children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Video, { className: "size-4" })
+							})
+						]
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+						className: "flex max-h-[480px] flex-1 flex-col gap-2 overflow-y-auto p-4",
+						children: detail.data.messages.map((m) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "max-w-[85%] self-start rounded-2xl bg-muted px-3 py-2 text-sm",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
+								className: "text-xs font-semibold text-primary",
+								children: ["@", m.username]
+							}), m.body.startsWith("data:image/") ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", {
+								src: m.body,
+								alt: "",
+								className: "mt-1 max-h-60 rounded-xl"
+							}) : m.body]
+						}, m.id))
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("form", {
+						className: "flex gap-2 border-t border-border p-3",
+						onSubmit: send,
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Input, {
+							"aria-label": "Group message",
+							value: text,
+							maxLength: 2e3,
+							onChange: (e) => {
+								setText(e.target.value);
+								if (active) setTyping({ data: { key: `group:${active}` } });
+							},
+							placeholder: "Message the group"
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
+							type: "submit",
+							className: "px-3",
+							"aria-label": "Send",
+							disabled: !text.trim(),
+							children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Send, { className: "size-4" })
+						})]
+					})
+				] }) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "m-auto px-6 py-16 text-center text-muted-foreground",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(MessagesSquare, { className: "mx-auto size-8 text-primary" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+						className: "mt-3 font-semibold text-foreground",
+						children: "Create a group to talk together"
+					})]
+				})
+			})]
+		}),
+		room && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CallFrame, {
+			room,
+			onClose: () => setRoom(null)
+		})
+	] });
+}
+//#endregion
+export { GroupsPage as component };

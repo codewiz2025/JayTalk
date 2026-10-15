@@ -1,0 +1,1 @@
+import{T as e,b as t}from"./index-Odw02vtj.js";var n=e(),r=()=>(0,n.jsx)(t,{to:`/login`});export{r as component};
