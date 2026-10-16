@@ -1,0 +1,11 @@
+[build]
+  command = "npm run build"
+  publish = "dist/client"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# TanStack Start + Nitro (Netlify) uses server functions
+[functions]
+  directory = "dist/server"
+  node_bundler = "esbuild"
