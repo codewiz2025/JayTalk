@@ -1,5 +1,5 @@
 [build]
-  command = "npm run build && ls -la && ls -la dist 2>/dev/null; ls -la .output 2>/dev/null; ls -la .output/public 2>/dev/null"
+  command = "npm run build"
   publish = "dist"
 
 [build.environment]
